@@ -1,4 +1,5 @@
 const Bootcamp = require('../models/Bootcamp');
+const ErrorResponse = require('../utils/errorResponse');
 
 //@desc     Recupera todos os bootcamps
 //@route    GET /api/v1/bootcamps
@@ -20,12 +21,14 @@ exports.getBootcamp = async (req, res, next) => {
         const bootcamp = await Bootcamp.findById(req.params.id);
 
         if (!bootcamp) {
-            return res.status(400).json({ success: false });
+            //return res.status(400).json({ success: false });
+            next(new ErrorResponse(`Bootcamp not found with id: ${req.params.id}`, 404));
         }
 
         res.status(200).json({ success: true, data: bootcamp });
     } catch (err) {
-        next(err);
+        //next(err); //quando era assim o err era tratado no middleware error.js com status padrao 500 e a msg era o err vindo da excecao. Mas abaixo o status e o erro eh customizado atraves da classe util ErrorResponse que extend Error, que eh o que next() espera.
+        next(new ErrorResponse(`Bootcamp not found with id: ${req.params.id}`, 404));
     }
 }
 
