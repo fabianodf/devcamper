@@ -22,7 +22,7 @@ const courses = JSON.parse(
 );
 
 const Bootcamp = require('./models/Bootcamp');
-const Course = require('./models/Courses');
+const Course = require('./models/Course');
 
 const importData = async () => {
     try {
