@@ -13,6 +13,7 @@ connectDB();
 
 //Route files
 const bootcamps = require('./routes/bootcamp');
+const courses = require('./routes/course');
 
 const app = express();
 
@@ -25,6 +26,7 @@ if (process.env.NODE_ENV === 'development') {
 
 //Mount routers
 app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/courses', courses);
 
 //Tem que ir depois do routers, pois middleware executa numa ordem linear e essa linha depende da router ter rodado antes
 app.use(errorHandler);
