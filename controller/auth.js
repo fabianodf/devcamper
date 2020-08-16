@@ -1,5 +1,6 @@
 const asyncHandler = require('../middleware/async');
 const User = require('../models/User');
+const ErrorResponse = require('../utils/errorResponse');
 
 //@desc      Register user
 //@route     POST /api/v1/register
@@ -16,3 +17,32 @@ exports.register = asyncHandler(async (req, res, next) => {
     res.status(200).json({ success: true, token });
 });
 
+
+//@desc      Login user
+//@route     POST /api/v1/login
+//@access    public
+exports.login = asyncHandler(async (req, res, next) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return next(new ErrorResponse("Please provide an email and password", 400));
+    }
+
+    //Check for user
+    const user = await User.findOne({ email }).select('+password');
+
+    if (!user) {
+        return next(new ErrorResponse("Invalid credentials", 401));
+    }
+
+    const isMatch = await user.matchPassword(password);
+
+    if (!isMatch) {
+        return next(new ErrorResponse("Invalid credentials", 401));
+    }
+
+    //Create token
+    const token = user.getSignJwtToken();
+
+    res.status(200).json({ success: true, token });
+});
