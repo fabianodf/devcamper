@@ -62,3 +62,20 @@ const sendTokenResponse = (user, statusCode, res) => {
         .cookie('token', token, options)
         .json({ success: true, token });
 };
+
+//@desc      Get current logged in user
+//@route     GET /api/v1/getMe
+//@access    private
+exports.getMe = asyncHandler(async (req, res, next) => {
+
+    //Check for user
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+        return next(new ErrorResponse("User not found", 401));
+    }
+
+    res
+        .status(200)
+        .json({ success: true, user });
+});
